@@ -50,14 +50,32 @@ docker run -p 3001:3001 --env-file .env auth-service
 ## API Endpoints
 
 | Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/auth/register` | No | Register new student |
-| POST | `/auth/login` | No | Login & get tokens |
-| GET | `/auth/profile` | JWT | Get user profile |
-| PUT | `/auth/profile` | JWT | Update profile |
-| POST | `/auth/refresh` | No | Refresh access token |
-| GET | `/auth/validate` | JWT | Validate token (inter-service) |
-| GET | `/health` | No | Health check |
+| ------ | -------- | ---- | ----------- |
+
+## Production Deployment
+
+- **Deployed URL:** https://auth-service-9b2b.onrender.com
+- **API Gateway URL:** [YOUR_API_GATEWAY_URL]
+
+> For all production API calls, use the API Gateway URL above. Direct service URLs are for internal use and debugging only.
+
+## CI/CD & Security
+
+- Automated build, test, and deploy via GitHub Actions
+- Static analysis: SonarCloud
+- Dependency scanning: Snyk
+
+---
+
+| Method | Endpoint         | Auth | Description                    |
+| ------ | ---------------- | ---- | ------------------------------ |
+| POST   | `/auth/register` | No   | Register new student           |
+| POST   | `/auth/login`    | No   | Login & get tokens             |
+| GET    | `/auth/profile`  | JWT  | Get user profile               |
+| PUT    | `/auth/profile`  | JWT  | Update profile                 |
+| POST   | `/auth/refresh`  | No   | Refresh access token           |
+| GET    | `/auth/validate` | JWT  | Validate token (inter-service) |
+| GET    | `/health`        | No   | Health check                   |
 
 ### API Documentation
 
