@@ -8,64 +8,35 @@ Authentication microservice for the Smart Campus Services platform (CTSE Cloud C
 - **JWT Authentication** (access + refresh tokens)
 - **Profile Management** (view, update)
 - **Token Validation** endpoint for inter-service communication
-- **Security**: Helmet, CORS, rate limiting, input validation
+- **Security**: Helmet, CORS, rate limiting, input validation (Joi)
 - **API Documentation**: Swagger/OpenAPI auto-generated
 
 ## Tech Stack
 
 - Node.js 18 + Express
-- MongoDB (Mongoose ODM)
-- JWT (jsonwebtoken)
-- Docker (multi-stage build)
+- MongoDB Atlas (Mongoose ODM)
+- JWT (jsonwebtoken) + bcrypt
+- Docker (multi-stage build, non-root user)
 - GitHub Actions CI/CD
 - SonarCloud + Snyk (DevSecOps)
 
 ## Quick Start
 
-### Local Development
-
 ```bash
-# Install dependencies
 npm install
-
-# Copy environment config
 cp .env.example .env
 # Edit .env with your MongoDB URI and JWT secrets
-
-# Start with nodemon
-npm run dev
+npm run dev     # http://localhost:3001
 ```
 
 ### Docker
 
 ```bash
-# Start with Docker Compose (includes MongoDB)
-docker-compose up --build
-
-# Or build image only
 docker build -t auth-service .
 docker run -p 3001:3001 --env-file .env auth-service
 ```
 
 ## API Endpoints
-
-| Method | Endpoint | Auth | Description |
-| ------ | -------- | ---- | ----------- |
-
-## Production Deployment
-
-- **Deployed URL:** https://auth-service-9b2b.onrender.com
-- **API Gateway URL:** https://api-gateway-5vao.onrender.com
-
-> For all production API calls, use the API Gateway URL above. Direct service URLs are for internal use and debugging only.
-
-## CI/CD & Security
-
-- Automated build, test, and deploy via GitHub Actions
-- Static analysis: SonarCloud
-- Dependency scanning: Snyk
-
----
 
 | Method | Endpoint         | Auth | Description                    |
 | ------ | ---------------- | ---- | ------------------------------ |
@@ -79,13 +50,14 @@ docker run -p 3001:3001 --env-file .env auth-service
 
 ### API Documentation
 
-Once running, visit: `http://localhost:3001/api-docs`
+Once running, visit: http://localhost:3001/api-docs
 
-## Testing
+## Production Deployment
 
-```bash
-npm test
-```
+- **Cloud Provider:** Microsoft Azure
+- **Service:** Azure Container Apps (managed container orchestration)
+- **Registry:** Azure Container Registry (`campusservices.azurecr.io`)
+- **Live URL:** https://auth-service.redisland-b57e0bf2.eastus.azurecontainerapps.io
 
 ## CI/CD Pipeline
 
@@ -93,16 +65,22 @@ The GitHub Actions pipeline runs on every push/PR to `main`:
 
 1. **Lint & Test** — ESLint + Jest with coverage
 2. **Security Scan** — SonarCloud (SAST) + Snyk (dependency vulnerabilities)
-3. **Build & Push** — Docker build → push to AWS ECR
-4. **Deploy** — Update ECS service with new image
-
-## Environment Variables
-
-See [`.env.example`](.env.example) for all configurable options.
+3. **Build & Push** — Docker build → push to Azure Container Registry
+4. **Deploy** — Update Azure Container App with new image
 
 ## Inter-Service Communication
 
 Other microservices (Course, Timetable, Notification) use the `GET /auth/validate` endpoint to verify JWT tokens. Send the token in the `Authorization: Bearer <token>` header.
+
+## Testing
+
+```bash
+npm test
+```
+
+## Environment Variables
+
+See [`.env.example`](.env.example) for all configurable options.
 
 ## License
 
